@@ -6,9 +6,50 @@ const Header = () => {
     const headerRef = useRef(null);
     const logoRef = useRef(null);
     const linksRef = useRef([]);
-    const [isMenuOpen, setIsMenuOpen] = React.useState(false); // State for mobile menu
+    const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+    const [isDarkMode, setIsDarkMode] = React.useState(true);
+    const [activeSection, setActiveSection] = React.useState('');
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        setActiveSection(entry.target.id);
+                    }
+                });
+            },
+            { threshold: 0.5 } // Trigger when 50% of section is visible
+        );
+
+        document.querySelectorAll('section').forEach((section) => {
+            observer.observe(section);
+        });
+
+        return () => observer.disconnect();
+    }, []);
+
+    useEffect(() => {
+        // Theme init
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            setIsDarkMode(false);
+            document.body.classList.add('light-mode');
+        }
+    }, []);
+
+    const toggleTheme = () => {
+        setIsDarkMode(!isDarkMode);
+        if (isDarkMode) {
+            document.body.classList.add('light-mode');
+            localStorage.setItem('theme', 'light');
+        } else {
+            document.body.classList.remove('light-mode');
+            localStorage.setItem('theme', 'dark');
+        }
+    };
 
     useEffect(() => {
         const tl = gsap.timeline();
@@ -37,8 +78,12 @@ const Header = () => {
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 zIndex: 100,
-                mixBlendMode: 'difference',
-                color: '#fff'
+                mixBlendMode: 'normal', // Changed from difference to avoid issues with light mode
+                background: 'var(--glass-bg)', // Added background for better visibility
+                backdropFilter: 'blur(10px)',
+                borderBottom: '1px solid var(--glass-border)',
+                color: 'var(--text-primary)',
+                transition: 'all 0.3s ease'
             }}
         >
             <a
@@ -70,7 +115,8 @@ const Header = () => {
                                     letterSpacing: '1px',
                                     position: 'relative',
                                     overflow: 'hidden',
-                                    display: 'inline-block'
+                                    display: 'inline-block',
+                                    color: activeSection === link.href.substring(1) ? 'var(--accent-color)' : 'inherit'
                                 }}
                                 className="hover-underline"
                             >
@@ -80,23 +126,45 @@ const Header = () => {
                     ))}
                 </ul>
             </nav>
+            {/* Theme Toggle & Hamburger Container */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <button
+                    onClick={toggleTheme}
+                    style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        fontSize: '1.2rem',
+                        color: 'var(--text-primary)',
+                        padding: '0.5rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: '50%',
+                        background: 'var(--surface-color)',
+                        border: '1px solid var(--glass-border)'
+                    }}
+                    title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                >
+                    {isDarkMode ? '☀️' : '🌙'}
+                </button>
 
-            {/* Mobile Hamburger */}
-            <button
-                className="mobile-toggle"
-                onClick={toggleMenu}
-                style={{
-                    display: 'none', // Hidden on desktop via CSS, shown on mobile
-                    background: 'none',
-                    border: 'none',
-                    color: 'white',
-                    fontSize: '1.5rem',
-                    cursor: 'pointer',
-                    zIndex: 200
-                }}
-            >
-                ☰
-            </button>
+                {/* Mobile Hamburger */}
+                <button
+                    className="mobile-toggle"
+                    onClick={toggleMenu}
+                    style={{
+                        display: 'none',
+                        background: 'none',
+                        border: 'none',
+                        color: 'var(--text-primary)',
+                        fontSize: '1.5rem',
+                        cursor: 'pointer'
+                    }}
+                >
+                    ☰
+                </button>
+            </div>
 
             {/* Mobile Menu Overlay */}
             {isMenuOpen && (
@@ -141,7 +209,7 @@ const Header = () => {
                                 fontSize: '2rem',
                                 fontWeight: 700,
                                 textTransform: 'uppercase',
-                                color: 'white'
+                                color: activeSection === link.href.substring(1) ? 'var(--accent-color)' : 'white'
                             }}
                         >
                             {link.name}

@@ -5,7 +5,8 @@ export const PERSONAL_INFO = {
     name: "Sanal Sabu",
     role: "Python & Full Stack Developer",
     bio: "Passionate Python Developer with expertise in Django, DRF, and PostgreSQL. I build scalable, secure, and maintainable systems with a focus on clean, efficient code and high performance.",
-    email: "sanalsabu22@gmail.com"
+    email: "sanalsabu22@gmail.com",
+    resume: "https://drive.google.com/file/d/1VxQlq5SurSts9r5-Xxk9WNNi0OCO49pU/view?usp=sharing" // Placeholder, user to update
 };
 
 export const NAV_LINKS = [

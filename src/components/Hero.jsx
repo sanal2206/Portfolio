@@ -91,7 +91,7 @@ const Hero = () => {
                 alignItems: 'center',
                 position: 'relative',
                 overflow: 'hidden',
-                padding: '6rem 1rem 2rem 1rem' // Added top padding for header clearance
+                padding: 'clamp(6rem, 10vh, 8rem) clamp(1.5rem, 5vw, 4rem) 2rem' // Responsive padding
             }}
         >
             <div ref={containerRef} style={{ textAlign: 'center', zIndex: 2, width: '100%', maxWidth: '1400px' }}>
@@ -170,6 +170,41 @@ const Hero = () => {
                     >
                         {PERSONAL_INFO.bio}
                     </p>
+
+                    {/* Resume Button */}
+                    <a
+                        href={PERSONAL_INFO.resume}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                            marginTop: '1.5rem',
+                            padding: '0.8rem 2rem',
+                            borderRadius: '50px',
+                            background: 'transparent',
+                            border: '1px solid var(--accent-color)',
+                            color: 'var(--accent-color)',
+                            fontSize: '1rem',
+                            fontWeight: 600,
+                            textTransform: 'uppercase',
+                            letterSpacing: '1px',
+                            transition: 'all 0.3s ease',
+                            cursor: 'pointer',
+                            textDecoration: 'none',
+                            display: 'inline-block'
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'var(--accent-color)';
+                            e.currentTarget.style.color = '#fff';
+                            e.currentTarget.style.boxShadow = '0 0 20px var(--accent-glow)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'transparent';
+                            e.currentTarget.style.color = 'var(--accent-color)';
+                            e.currentTarget.style.boxShadow = 'none';
+                        }}
+                    >
+                        Download Resume
+                    </a>
 
                     <div
                         style={{
